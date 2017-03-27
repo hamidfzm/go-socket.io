@@ -9,7 +9,6 @@ import (
 
 // Socket is the socket object of socket.io.
 type Socket interface {
-
 	// Id returns the session id of socket.
 	Id() string
 
@@ -18,6 +17,9 @@ type Socket interface {
 
 	// Request returns the first http request when established connection.
 	Request() *http.Request
+
+	// Disconnect socket
+	Disconnect() error
 
 	// On registers the function f to handle an event.
 	On(event string, f interface{}) error
@@ -59,12 +61,16 @@ func (s *socket) Request() *http.Request {
 	return s.conn.Request()
 }
 
+func (s *socket) Disconnect() error {
+	return s.conn.Close()
+}
+
 func (s *socket) Emit(event string, args ...interface{}) error {
 	if err := s.socketHandler.Emit(event, args...); err != nil {
 		return err
 	}
 	if event == "disconnect" {
-		s.conn.Close()
+		return s.Disconnect()
 	}
 	return nil
 }
