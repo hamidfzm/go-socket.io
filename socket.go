@@ -18,7 +18,7 @@ type Socket interface {
 	// Request returns the first http request when established connection.
 	Request() *http.Request
 
-	// Disconnect socket
+	// Disconnect disconnects socket.
 	Disconnect() error
 
 	// On registers the function f to handle an event.
@@ -32,6 +32,9 @@ type Socket interface {
 
 	// Leave leaves the room.
 	Leave(room string) error
+
+	// LeaveAll leaves all the rooms.
+	LeaveAll() error
 
 	// BroadcastTo broadcasts an event to the room with given args.
 	BroadcastTo(room, event string, args ...interface{}) error
